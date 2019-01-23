@@ -1,0 +1,804 @@
+ 
+select
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') MakeId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsMakeID"]') odsId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Name') name
+--, product_xml
+from master_product mp
+where PRODUCT_TYP_CD='CarsMake'
+order by 1;
+ 
+ 
+ 
+select
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') ModelId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsModelID"]') odsId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Name') name
+from master_product mp
+where PRODUCT_TYP_CD='CarsModel'
+order by 1;
+ 
+ 
+select
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') YearId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsYearID"]') odsId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Name') name
+--, product_xml
+from master_product mp
+where PRODUCT_TYP_CD='CarsYear'
+order by 1;
+ 
+ 
+select
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') TrimId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsTrimID"]') odsId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Name') name
+--, product_xml
+from master_product mp
+where PRODUCT_TYP_CD='CarsTrim'
+order by 1;
+ 
+ 
+select
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') bodyStyleId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsBodyStyleID"]') odsId,
+extractvalue(XMLTYPE(PRODUCT_XML), '/Product/Name') name 
+from master_product mp
+where PRODUCT_TYP_CD='CarsBodystyle'
+order by 1;
+ 
+ 
+select distinct
+--m.PRODUCT_ID,
+--mm.PRODUCT_ID,
+--mmy.PRODUCT_ID,
+extractvalue(XMLTYPE(m.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') MakeId,
+extractvalue(XMLTYPE(md.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') ModelId,
+extractvalue(XMLTYPE(y.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') YearId,
+extractvalue(XMLTYPE(t.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') TrimId
+from master_product m
+inner join master_product mm on m.PRODUCT_ID=mm.PRODUCT_PARENT_ID
+inner join master_product mmy on mm.PRODUCT_ID=mmy.PRODUCT_PARENT_ID
+inner join master_product mmyt on mmy.PRODUCT_ID=mmyt.PRODUCT_PARENT_ID
+inner join master_product_ref mpr on mm.PRODUCT_ID=mpr.PRODUCT_ID
+inner join master_product md on md.Product_ID=mpr.PRODUCT_REF_ID
+inner join master_product_ref mpry on mmy.PRODUCT_ID=mpry.PRODUCT_ID
+inner join master_product y on y.Product_ID=mpry.PRODUCT_REF_ID
+inner join master_product_ref mprt on mmyt.PRODUCT_ID=mprt.PRODUCT_ID
+inner join master_product t on t.Product_ID=mprt.PRODUCT_REF_ID
+where mm.PRODUCT_TYP_CD='CarsMM'
+and mmy.PRODUCT_TYP_CD='CarsMMY'
+and mmyt.PRODUCT_TYP_CD='CarsMMYT'
+and md.PRODUCT_TYP_CD='CarsModel'
+and y.PRODUCT_TYP_CD='CarsYear'
+and t.PRODUCT_TYP_CD='CarsTrim'
+order by MakeId, ModelId, YearId, TrimId
+;
+ 
+ 
+select distinct
+--m.PRODUCT_ID,
+--mm.PRODUCT_ID,
+--mmy.PRODUCT_ID,
+extractvalue(XMLTYPE(m.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') MakeId,
+extractvalue(XMLTYPE(md.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') ModelId,
+extractvalue(XMLTYPE(y.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') YearId,
+extractvalue(XMLTYPE(t.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') TrimId,
+extractvalue(XMLTYPE(b.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') BodyStyleId
+from master_product m
+inner join master_product mm on m.PRODUCT_ID=mm.PRODUCT_PARENT_ID
+inner join master_product mmy on mm.PRODUCT_ID=mmy.PRODUCT_PARENT_ID
+inner join master_product mmyt on mmy.PRODUCT_ID=mmyt.PRODUCT_PARENT_ID
+inner join master_product mmytb on mmyt.PRODUCT_ID=mmytb.PRODUCT_PARENT_ID
+inner join master_product_ref mpr on mm.PRODUCT_ID=mpr.PRODUCT_ID
+inner join master_product md on md.Product_ID=mpr.PRODUCT_REF_ID
+inner join master_product_ref mpry on mmy.PRODUCT_ID=mpry.PRODUCT_ID
+inner join master_product y on y.Product_ID=mpry.PRODUCT_REF_ID
+inner join master_product_ref mprt on mmyt.PRODUCT_ID=mprt.PRODUCT_ID
+inner join master_product t on t.Product_ID=mprt.PRODUCT_REF_ID
+inner join master_product_ref mprb on mmytb.PRODUCT_ID=mprb.PRODUCT_ID
+inner join master_product b on b.Product_ID=mprb.PRODUCT_REF_ID
+where mm.PRODUCT_TYP_CD='CarsMM'
+and mmy.PRODUCT_TYP_CD='CarsMMY'
+and mmyt.PRODUCT_TYP_CD='CarsMMYT'
+and mmytb.PRODUCT_TYP_CD='CarsMMYTB'
+and md.PRODUCT_TYP_CD='CarsModel'
+and y.PRODUCT_TYP_CD='CarsYear'
+and t.PRODUCT_TYP_CD='CarsTrim'
+and b.PRODUCT_TYP_CD='CarsBodystyle'
+order by MakeId, ModelId, YearId, TrimId, BodyStyleId
+;
+ 
+select count(*) from (
+select distinct
+extractvalue(XMLTYPE(m.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') MakeId,
+extractvalue(XMLTYPE(md.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') ModelId,
+extractvalue(XMLTYPE(y.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') YearId,
+extractvalue(XMLTYPE(t.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') TrimId,
+extractvalue(XMLTYPE(b.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') BodyStyleId
+from master_product m
+inner join master_product mm on m.PRODUCT_ID=mm.PRODUCT_PARENT_ID
+inner join master_product mmy on mm.PRODUCT_ID=mmy.PRODUCT_PARENT_ID
+inner join master_product mmyt on mmy.PRODUCT_ID=mmyt.PRODUCT_PARENT_ID
+inner join master_product mmytb on mmyt.PRODUCT_ID=mmytb.PRODUCT_PARENT_ID
+inner join master_product_ref mpr on mm.PRODUCT_ID=mpr.PRODUCT_ID
+inner join master_product md on md.Product_ID=mpr.PRODUCT_REF_ID
+inner join master_product_ref mpry on mmy.PRODUCT_ID=mpry.PRODUCT_ID
+inner join master_product y on y.Product_ID=mpry.PRODUCT_REF_ID
+inner join master_product_ref mprt on mmyt.PRODUCT_ID=mprt.PRODUCT_ID
+inner join master_product t on t.Product_ID=mprt.PRODUCT_REF_ID
+inner join master_product_ref mprb on mmytb.PRODUCT_ID=mprb.PRODUCT_ID
+inner join master_product b on b.Product_ID=mprb.PRODUCT_REF_ID
+where mm.PRODUCT_TYP_CD='CarsMM'
+and mmy.PRODUCT_TYP_CD='CarsMMY'
+and mmyt.PRODUCT_TYP_CD='CarsMMYT'
+and mmytb.PRODUCT_TYP_CD='CarsMMYTB'
+and m.PRODUCT_TYP_CD='CarsMake'
+and md.PRODUCT_TYP_CD='CarsModel'
+and y.PRODUCT_TYP_CD='CarsYear'
+and t.PRODUCT_TYP_CD='CarsTrim'
+and b.PRODUCT_TYP_CD='CarsBodystyle')
+;
+ 
+                       
+LOAD CSV WITH HEADERS FROM "file:///make.csv" AS row
+CREATE ( :Make{ makeId:toInt(row.MAKEID), odsId:toInt(row.ODSID), name:row.NAME })
+ 
+ 
+CREATE INDEX ON :Make(makeId)
+CREATE INDEX ON :Make(odsId)
+ 
+ 
+LOAD CSV WITH HEADERS FROM "file:///model.csv" AS row
+CREATE ( :Model{ modelId:toInt(row.MODELID), odsId:toInt(row.ODSID), name:row.NAME })
+ 
+CREATE INDEX ON :Model(modelId)
+CREATE INDEX ON :Model(odsId)
+ 
+ 
+LOAD CSV WITH HEADERS FROM "file:///year.csv" AS row
+CREATE ( :Year{ yearId:toInt(row.YEARID), odsId:toInt(row.ODSID), name:row.NAME })
+  
+CREATE INDEX ON :Year(yearId)
+CREATE INDEX ON :Year(odsId)
+
+ 
+LOAD CSV WITH HEADERS FROM "file:///trim.csv" AS row
+CREATE ( :Trim{ trimId:toInt(row.TRIMID), odsId:toInt(row.ODSID), name:row.NAME })
+ 
+CREATE INDEX ON :Trim(trimId)
+CREATE INDEX ON :Trim(odsId)
+ 
+
+LOAD CSV WITH HEADERS FROM "file:///bodystyle.csv" AS row
+CREATE ( :BodyStyle{ bodyStyleId:toInt(row.BODYSTYLEID), odsId:toInt(row.ODSID), name:row.NAME })
+ 
+CREATE INDEX ON :BodyStyle(bodyStyleId)
+CREATE INDEX ON :BodyStyle(odsId)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///makeModel.csv" AS row
+MERGE ( mm:MakeModel{ makeId:toInt(row.MAKEID), modelId:toInt(row.MODELID) })
+ 
+CREATE INDEX ON :MakeModel(makeId)
+CREATE INDEX ON :MakeModel(modelId)
+ 
+ 
+MATCH (m:Make), (md:Model), (mm:MakeModel) WHERE m.makeId=mm.makeId and md.modelId=mm.modelId MERGE (m)<-[:OF_MAKE]-(mm) MERGE (m)<-[:OF_MAKE]-(md) MERGE (md)<-[:OF_MODEL]-(mm)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///makeModelYear.csv" AS row
+CREATE ( mm:MakeModelYear{ makeId:toInt(row.MAKEID), modelId:toInt(row.MODELID), yearId:toInt(row.YEARID) })
+ 
+CREATE INDEX ON :MakeModelYear(makeId)
+CREATE INDEX ON :MakeModelYear(modelId)
+CREATE INDEX ON :MakeModelYear(yearId)
+ 
+MATCH (m:Make)<-[]-(mm:MakeModel)<-[]-(mmy:MakeModelYear) WHERE mmy.makeId=m.makeId MERGE (m)<-[:OF_MAKE]-(mmy)
+ 
+MATCH (mk:Make)<--(mm:MakeModel)<--(mmy:MakeModelYear) CREATE (mk)<-[:OF_MAKE]-(mmy)
+ 
+MATCH (mm:MakeModel), (mmy:MakeModelYear), (md:Model), (y:Year) WHERE mm.makeId=mmy.makeId AND mm.modelId=mmy.modelId AND mm.modelId=md.modelId AND md.modelId=mmy.modelId and mmy.yearId=y.yearId MERGE (md)<-[:OF_MODEL]-(mmy) MERGE (mm)<-[:OF_MAKE_MODEL]-(mmy) MERGE (y)<-[:OF_YEAR]-(mmy)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///makeModelYearTrim.csv" AS row
+CREATE ( mm:MakeModelYearTrim{ makeId:toInt(row.MAKEID), modelId:toInt(row.MODELID), yearId:toInt(row.YEARID), trimId:toInt(row.TRIMID) })
+ 
+ 
+CREATE INDEX ON :MakeModelYearTrim(makeId)
+CREATE INDEX ON :MakeModelYearTrim(modelId)
+CREATE INDEX ON :MakeModelYearTrim(yearId)
+CREATE INDEX ON :MakeModelYearTrim(trimId)
+ 
+ 
+ 
+MATCH (mmy:MakeModelYear), (mmyt:MakeModelYearTrim), (md:Model), (y:Year), (t:Trim) WHERE mmy.makeId=mmyt.makeId AND mmy.modelId=mmyt.modelId AND mmy.yearId=mmyt.yearId AND mmy.modelId=md.modelId AND md.modelId=mmyt.modelId and mmy.yearId=y.yearId AND mmyt.trimId=t.trimId MERGE (md)<-[:OF_MODEL]-(mmyt) MERGE (mmy)<-[:OF_MAKE_MODEL_YEAR]-(mmyt) MERGE (t)<-[:OF_TRIM]-(mmyt) MERGE (y)<-[:OF_YEAR]-(mmyt)
+ 
+MATCH (mk:Make)<--(mm:MakeModel)<--(mmy:MakeModelYear)<--(mmyt:MakeModelYearTrim) CREATE (mk)<-[:OF_MAKE]-(mmyt)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///makeModelYearTrimBodystyle.csv" AS row
+CREATE ( mm:MakeModelYearTrimBodyStyle{ makeId:toInt(row.MAKEID), modelId:toInt(row.MODELID), yearId:toInt(row.YEARID), trimId:toInt(row.TRIMID), bodyStyleId:toInt(row.BODYSTYLEID) })
+ 
+ 
+CREATE INDEX ON :MakeModelYearTrimBodyStyle(makeId)
+CREATE INDEX ON :MakeModelYearTrimBodyStyle (modelId)
+CREATE INDEX ON :MakeModelYearTrimBodyStyle (yearId)
+CREATE INDEX ON :MakeModelYearTrimBodyStyle (trimId)
+CREATE INDEX ON :MakeModelYearTrimBodyStyle (bodyStyleId)
+ 
+ 
+MATCH (mmyt:MakeModelYearTrim), (mmytb:MakeModelYearTrimBodyStyle), (md:Model), (y:Year), (t:Trim), (b:BodyStyle) WHERE mmyt.makeId=mmytb.makeId AND mmyt.modelId=mmytb.modelId AND mmyt.yearId=mmytb.yearId AND mmyt.trimId=mmytb.trimId AND mmytb.modelId=md.modelId AND mmytb.yearId=y.yearId AND mmytb.trimId=t.trimId AND mmytb.bodyStyleId=b.bodyStyleId MERGE (md)<-[:OF_MODEL]-(mmytb) MERGE (t)<-[:OF_TRIM]-(mmytb) MERGE (y)<-[:OF_YEAR]-(mmytb) MERGE (mmyt)<-[:OF_MAKE_MODEL_YEAR_TRIM]-(mmytb) MERGE (b)<-[:OF_BODYSTYLE]-(mmytb)
+ 
+MATCH (mk:Make)<--(mm:MakeModel)<--(mmy:MakeModelYear)<--(mmyt:MakeModelYearTrim)<--(mmytb:MakeModelYearTrimBodyStyle) CREATE (mk)<-[:OF_MAKE]-(mmytb)
+ 
+select
+--mpp.PRODUCT_ID,
+--mpc.PRODUCT_ID,
+--mprc.PRODUCT_ID,
+extractvalue(XMLTYPE(mpp.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') MakeId,
+extractvalue(XMLTYPE(mprc.PRODUCT_XML), '/Product/Values/Value[@AttributeID="CarsProductID"]') ModelId
+from master_product mpp
+inner join master_product mpc on mpp.PRODUCT_ID=mpc.PRODUCT_PARENT_ID
+inner join master_product_ref mpr on mpc.PRODUCT_ID=mpr.PRODUCT_ID
+inner join master_product mprc on mpr.PRODUCT_REF_ID=mprc.PRODUCT_ID
+where mpc.PRODUCT_TYP_CD='CarsMM'
+and mprc.PRODUCT_TYP_CD='CarsModel'
+order by MakeId, ModelId
+;
+ 
+ 
+LOAD CSV WITH HEADERS FROM "file:///makeModel.csv" AS row
+MATCH (md:Model {modelId: toInt(row.MODELID)})
+MATCH (mk:Make {makeId: toInt(row.MAKEID)})
+MERGE (md)-[:OF_MAKE]->(mk)
+ 
+ 
+LOAD CSV WITH HEADERS FROM "file:///gender.csv" as row
+CREATE (:Gender{genderId:toInt(row.genderId), gender:row.gender})
+ 
+ 
+LOAD CSV WITH HEADERS FROM "file:///age.csv" as row
+CREATE (:Age{ageId:toInt(row.ageId), age:toInt(row.age)})
+ 
+LOAD CSV WITH HEADERS FROM "file:///yearBucket.csv" as row
+MERGE (:YearBucket{yearBucketId:toInt(row.yearBucketId), startYear:toInt(row.startYear), endYear:toInt(row.endYear)})
+ 
+MATCH (a:Age), (yb:YearBucket) WHERE a.age>=yb.startYear AND a.age<=yb.endYear MERGE (a)-[:OF_YEAR_BUCKET]->(yb)
+ 
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///consumers.csv" AS row
+CREATE (:Consumer {consumerId: toInt(row.cnsmr_id), publicConsumerId: toInt(row.public_cnsmr_id), lastName: row.person_last_nm, firstName: row.person_first_nm, emailAddress: row.user_access_id, age: toInt(row.age), genderId: toInt(row.gender), postalCode: row.postal_cd})
+ 
+ 
+CREATE INDEX ON :Consumer(consumerId)
+CREATE INDEX ON :Consumer(age)
+CREATE INDEX ON :Consumer(genderId)
+ 
+MATCH (c:Consumer), (a:Age) WHERE c.age=a.age MERGE (c)-[:OF_AGE]->(a)
+ 
+MATCH (c:Consumer), (g:Gender) WHERE c.genderId=g.genderId MERGE (c)-[:OF_GENDER]->(g)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///Searches.csv" AS row
+CREATE (:Search {impressionsCount: toInt(row.impressionsCount), date: row.date, dmaCode: row.dmaCode, makeName: row.makeName, odsMakeId: toInt(row.odsMakeId), modelName: row.modelName, odsModelId: toInt(row.odsModelId), trimName: row.trimName, odsTrimId: toInt(row.odsTrimId), year: toInt(row.year), odsYearId: toInt(row.odsYearId), consumerAccountId: toInt(row.consumerAccountId), consumerId: toInt(row.odsConsumerId) })
+
+
+MATCH (s:Search), (md:Model), (y:Year), (t:Trim), (mk)<--(mmyt:MakeModelYearTrim), (md)<--(mmyt),(y)<--(mmyt), (t)<--(mmyt) WHERE mk.odsId=s.odsMakeId AND md.odsId=s.odsModelId AND y.odsId=s.odsYearId AND t.odsId=s.odsTrimId CREATE (s)-[:OF_MAKE_MODEL_YEAR_TRIM]->(mmyt)
+ 
+ 
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///VDP-Impressions.csv" AS row
+CREATE (:VDPImpression {impressionsCount: toInt(row.impressionsCount), date: row.date, dmaCode: row.dmaCode, makeName: row.makeName, odsMakeId: toInt(row.odsMakeId), modelName: row.modelName, odsModelId: toInt(row.odsModelId), trimName: row.trimName, odsTrimId: toInt(row.odsTrimId), year: toInt(row.year), odsYearId: toInt(row.odsYearId), consumerAccountId: toInt(row.consumerAccountId), consumerId: toInt(row.odsConsumerId) })
+
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:///VDP-impressions.csv" AS row
+MATCH (c:Consumer {consumerId: toInt(row.consumerAccountId)})
+MATCH (mmyt:MakeModelYearTrim {odsMakeId: toInt(row.odsMakeId), odsModelId: toInt(row.odsModelId), odsYearId: toInt(row.odsYearId), odsTrimId: toInt(row.odsTrimId)})
+CREATE (mmyt)-[r:VIEWED_BY {impressionsCount: toInt(row.impressionsCount)}]->(c)
+
+ 
+CREATE INDEX ON :Search(consumerId)
+ 
+CREATE INDEX ON :VDPImpression(consumerId)
+ 
+MATCH (c:Consumer), (s:VDPImpression) WHERE c.consumerId=s.consumerId CREATE (c)<-[:BY_CONSUMER]-(s)
+ 
+MATCH (c:Consumer), (s:Search) WHERE c.consumerId=s.consumerId CREATE (c)<-[:BY_CONSUMER]-(s)
+ 
+ 
+MATCH (m:Make), (v:VDPImpression) WHERE m.odsId=v.odsMakeId CREATE (m)<-[:OF_MAKE]-(v)
+ 
+MATCH (m:Model), (v:VDPImpression) WHERE m.odsId=v.odsModelId CREATE (m)<-[:OF_MODEL]-(v)
+ 
+MATCH (m:Make), (s:Search) WHERE m.odsId=s.odsMakeId CREATE (m)<-[:OF_MAKE]-(s)
+ 
+MATCH (m:Model), (s:Search) WHERE m.odsId=s.odsModelId CREATE (m)<-[:OF_MODEL]-(s)
+ 
+ 
+MATCH (s:Search)-->(mk:Make), (s)-->(md:Model), (s)-->(y:Year), (s)-->(t:Trim), (mk)<--(mm:MakeModel)-->(md), (mm)<--(mmy:MakeModelYear)-->(y),(mmy)<--(mmyt:MakeModelYearTrim)-->(t) CREATE (s)-[:OF_MAKE_MODEL_YEAR_TRIM]->(mmyt)
+ 
+MATCH (v:VDPImpression)-->(mk:Make), (v)-->(md:Model), (v)-->(y:Year), (v)-->(t:Trim), (mk)<--(mm:MakeModel)-->(md), (mm)<--(mmy:MakeModelYear)-->(y),(mmy)<--(mmyt:MakeModelYearTrim)-->(t) CREATE (v)-[:OF_MAKE_MODEL_YEAR_TRIM]->(mmyt)
+ 
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (c:Consumer)<-[]-(s:Search)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2016
+WITH
+            mk, m, y, c
+MATCH
+            (c)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year)
+WHERE
+            m<>mr and y.name<=yr.name
+RETURN
+            mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (v)-[]->(mmyt:MakeModelYearTrim),
+            (c:Consumer)<-[]-(v:VDPImpression)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2016
+WITH
+            mk, m, y, c
+MATCH
+            (c)<-[]-(vr:VDPImpression),
+            (vr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year)
+WHERE
+            m<>mr and y.name<=yr.name
+RETURN
+            mkr.name, mr.name, yr.name, Sum(vr.impressionsCount)
+ORDER BY
+            Sum(vr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (b:BodyStyle)<-[]-(mmytb),
+            (v)-[]->(mmyt:MakeModelYearTrim),  
+            (c:Consumer)<-[]-(v:VDPImpression)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2016
+WITH
+            mk, m, y, b, c
+MATCH
+            (c)<-[]-(vr:VDPImpression),
+            (vr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (br:BodyStyle)<-[]-(mmytbr)
+WHERE
+            m<>mr and y.name<=yr.name and b=br
+RETURN
+            mkr.name, mr.name, yr.name, Sum(vr.impressionsCount)
+ORDER BY
+            Sum(vr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (b:BodyStyle)<-[]-(mmytb),
+            (s)-[]->(mmyt:MakeModelYearTrim),  
+            (c:Consumer)<-[]-(s:Search)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2016
+WITH
+            mk, m, y, b, c
+MATCH
+            (c)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (br:BodyStyle)<-[]-(mmytbr)
+WHERE
+            m<>mr and y.name<=yr.name and b=br
+RETURN
+            mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+ 
+ 
+ 
+MATCH (c:Consumer)<-[]-(s:Search) RETURN c.consumerId, SUM(s.impressionsCount) ORDER BY SUM(s.impressionsCount) DESC LIMIT 25
+ 
+ 
+ 
+MATCH
+            (c:Consumer)<-[]-(s:Search),
+            (s)-[]->(mk:Make),
+            (s)-[]->(m:Model),
+            (s)-[]->(y:Year),
+            (s)-[]->(t:Trim),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2201416
+WITH
+            mk, m, y, t, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (o)<-[]-(sr:Search),
+            (sr)-[]->(mkr:Make),
+            (sr)-[]->(mr:Model),
+            (sr)-[]->(yr:Year),
+            (sr)-[]->(tr:Trim),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH
+            (c:Consumer)<-[]-(s:Search),
+            (s)-[]->(mk:Make),
+            (s)-[]->(m:Model),
+            (s)-[]->(y:Year),
+            (s)-[]->(t:Trim),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2201416
+WITH
+            mk, m, y, t, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (c)-[]->(g:Gender)<-[]-(o),
+            (o)<-[]-(sr:Search),
+            (sr)-[]->(mkr:Make),
+            (sr)-[]->(mr:Model),
+            (sr)-[]->(yr:Year),
+            (sr)-[]->(tr:Trim),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH
+            (c:Consumer)<-[]-(s:Search),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)-[]->(t:Trim),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2201416
+WITH
+            mk, m, y, t, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (c)-[]->(g:Gender)<-[]-(o),
+            (o)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)-[]->(tr:Trim),            
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+MATCH
+            (c:Consumer)<-[]-(s:Search),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2006925
+WITH
+            mk, m, y, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (c)-[]->(g:Gender)<-[]-(o),
+            (o)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+MATCH
+            (c:Consumer)<-[]-(v:VDPImpression),
+            (v)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2201416
+WITH
+            mk, m, y, b, Sum(v.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (c)-[]->(g:Gender)<-[]-(o),
+            (o)<-[]-(vr:VDPImpression),
+            (vr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(vr.impressionsCount)
+ORDER BY
+            Sum(vr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH
+            (c:Consumer)<-[]-(v:VDPImpression),
+            (v)-[]->(mmyt:MakeModelYearTrim),
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (mmytb)-[]->(b:BodyStyle)
+WHERE
+            c.consumerId=2006925
+WITH
+            mk, m, y, b, Sum(v.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            (c)-[]->(g:Gender)<-[]-(o),
+            (o)<-[]-(vr:VDPImpression),
+            (vr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (mmytbr)-[]->(br:BodyStyle)
+WHERE
+            c<>o and m<>mr and y=yr and b=br 
+RETURN
+            b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(vr.impressionsCount)
+ORDER BY
+            Sum(vr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (s)-[]->(mmyt:MakeModelYearTrim),
+            (c:Consumer)<-[]-(s:Search)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2017
+WITH
+            mk, m, y
+MATCH
+            (c)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year)
+WHERE
+            m<>mr and y.name<=yr.name
+RETURN
+            mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+ 
+ 
+ 
+ 
+MATCH
+            (mmyt)-[]->(mk:Make),
+            (mmyt)-[]->(m:Model),
+            (mmyt)-[]->(y:Year),
+            (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+            (b:BodyStyle)<-[]-(mmytb),
+            (s)-[]->(mmyt:MakeModelYearTrim),  
+            (c:Consumer)<-[]-(s:Search)
+WHERE
+            mk.name='BMW' and m.name='X5' and y.name=2016
+WITH
+            mk, m, y, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 10
+MATCH
+            (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+            c)-[]->(g:Gender)<-[]-(o:Consumer),
+            (o)<-[]-(sr:Search),
+            (sr)-[]->(mmytr:MakeModelYearTrim),
+            (mmytr)-[]->(mkr:Make),
+            (mmytr)-[]->(mr:Model),
+            (mmytr)-[]->(yr:Year),
+            (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+            (br:BodyStyle)<-[]-(mmytbr)
+WHERE
+            m<>mr and y.name<=yr.name and b=br
+RETURN
+            mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY
+            Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+MATCH (c:Consumer)<-[]-(v:VDPImpression)-[]->(t:Trim)-[]->(m:Model)-[]->(mk:Make)
+MATCH (o:Consumer)<-[]-(vr:VDPImpression)-[]->(tr:Trim)-[]->(mr:Model)-[]->(mkr:Make)
+WHERE o <> c
+MATCH (c)-[]->(d:Demographic)<-[]-(o)
+WHERE c.consumerId = 2000136 AND mk.name=mkr.name and m.name=mr.name
+RETURN mkr.name, m.name, tr.name, count(o.consumerId)
+ORDER BY count(o.consumerId) DESC
+LIMIT 10
+ 
+ 
+MATCH (s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE s.odsMakeId=20021 AND s.odsModelId=21222
+with s, m, mm, mk
+match (c:Consumer)<-[]-(s)-[]->(y:Year)
+with m, mm, mk, y,  Sum(s.impressionsCount) As ImpNum
+return mk.name, m.name, y.name, ImpNum
+ORDER BY ImpNum DESC
+LIMIT 25
+ 
+MATCH (s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+with s, m, mm, mk
+match (c:Consumer)<-[]-(s)-[]->(y:Year)
+with m, mm, mk, y, Count(c.consumerId) As CnsNum,  Sum(s.impressionsCount) As ImpNum
+return mk.name, m.name, y.name, CnsNum, ImpNum
+ORDER BY ImpNum DESC, CnsNum DESC
+LIMIT 25
+ 
+MATCH (s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE s.odsMakeId=20021 AND s.odsModelId=21222
+with s, m, mm, mk
+match (c:Consumer)<-[]-(s)-[]->(y:Year)
+with m, mm, mk, y, Count(c.consumerId) As CnsNum, Sum(s.impressionsCount) As ImpNum
+return mk.name, m.name, y.name, ImpNum, CnsNum
+ORDER BY ImpNum DESC
+LIMIT 25
+ 
+MATCH (c:Consumer)<-[]-(s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE s.odsMakeId=20021 AND s.odsModelId=21222 and s.odsYearId=30031936
+with s, m, mm, mk
+match (s)-[]->(y:Year)
+with m, mm, mk, y,  Sum(s.impressionsCount) As ImpNum
+return mk.name, m.name, y.name, ImpNum
+ORDER BY ImpNum DESC
+LIMIT 25
+ 
+ 
+MATCH (c:Consumer)<-[]-(s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE c.consumerId=2201416
+with c, s, m, mm, mk
+match (s)-[]->(y:Year)
+with m, mm, mk, y, Sum(s.impressionsCount) As ImpNum
+return mk.name, m.name, y.name, ImpNum
+ORDER BY ImpNum DESC
+LIMIT 25
+ 
+ 
+MATCH (c:Consumer)<-[]-(s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE c.consumerId=2201416
+with c, s, m, mm, mk
+match (s)-[]->(y:Year)
+with c, m, mm, mk, y, Sum(s.impressionsCount) As ImpNum
+MATCH (o:Consumer)<-[]-(sr:Search)-[]->(mr:Model)<-[]-(mmr:MakeModel)-[]->(mkr:Make)
+WHERE c<>o and mkr=mk and mr<>m
+with c, m, mm, mk, y, o, sr, mr, mmr, mkr, ImpNum
+match (sr)-[]->(yr:Year) where y=yr and y.name='2017'
+return mk.name, m.name, y.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY Sum(sr.impressionsCount) DESC
+LIMIT 25
+ 
+ 
+MATCH (c:Consumer)<-[]-(s:Search)-[]->(m:Model)<-[]-(mm:MakeModel)-[]->(mk:Make)
+WHERE c.consumerId=2201416
+with c, s, m, mm, mk
+match (s)-[]->(y:Year)
+with c, m, mm, mk, y, Sum(s.impressionsCount) As ImpNum
+MATCH (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer)<-[]-(sr:Search)-[]->(mr:Model)<-[]-(mmr:MakeModel)-[]->(mkr:Make)
+WHERE c<>o and mkr=mk and mr<>m
+with c, m, mm, mk, y, o, sr, mr, mmr, mkr, ImpNum
+match (sr)-[]->(yr:Year) where y=yr and y.name='2017'
+return mk.name, m.name, y.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY Sum(sr.impressionsCount) DESC
+LIMIT 25

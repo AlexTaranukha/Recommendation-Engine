@@ -1,0 +1,244 @@
+MATCH (c:Consumer)<-[]-(s:Search), (s)-[]->(m:Model), (s)-[]->(mk:Make), (s)-[]->(y:Year)
+WHERE c.consumerId=2201416 and y.name=2017
+with c, m, mk, y, Sum(s.impressionsCount) As ImpNum ORDER BY ImpNum DESC LIMIT 1
+MATCH (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer), (o)<-[]-(sr:Search), (sr)-[]->(mr:Model), (sr)-[]->(mkr:Make), (sr)-[]->(yr:Year)
+WHERE c<>o and mr<>m
+return mk.name, m.name, y.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+MATCH 
+	(c:Consumer)<-[]-(s:Search), 
+	(s)-[]->(mk:Make), 
+	(s)-[]->(m:Model), 
+	(s)-[]->(y:Year), 
+	(s)-[]->(t:Trim)
+WHERE 
+	c.consumerId=2201416 
+WITH 
+	mk, m, y, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH 
+	(c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer), 
+	(o)<-[]-(sr:Search), 
+	(sr)-[]->(mkr:Make), 
+	(sr)-[]->(mr:Model), 
+	(sr)-[]->(yr:Year)
+WHERE 
+	c<>o and m<>mr  
+RETURN 
+	m.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+
+MATCH (c:Consumer)<-[]-(s:Search), (s)-[]->(m:Model), (s)-[]->(mk:Make), (s)-[]->(y:Year)
+WHERE c.consumerId=2201416
+with c, m, mm, mk, y, Sum(s.impressionsCount) As ImpNum ORDER BY ImpNum DESC LIMIT 10
+MATCH (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer)<-[]-(sr:Search)-[]->(mr:Model)<-[]-(mmr:MakeModel)-[]->(mkr:Make),(sr)-[]->(yr:Year)
+WHERE c<>o and mr<>m
+and y=yr and y.name='2017'
+return mk.name, m.name, y.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+MATCH (c:Consumer)<-[]-(s:Search), (s)-[]->(mk:Make), (s)-[]->(m:Model), (s)-[]->(y:Year), (s)-[]->(t:Trim), (mmyt:MakeModelYearTrim)-[]->(m), (mmyt)-[]->(y), (mmyt)-[]->(t), (mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle), (mmytb)-[]->(b:BodyStyle)
+WHERE c.consumerId=2201416 
+WITH b, Sum(s.impressionsCount) As ImpNum ORDER BY ImpNum DESC LIMIT 2
+MATCH (c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer), 
+(o)<-[]-(sr:Search), (sr)<-[]->(mkr:Make), (sr)-[]->(mr:Model), (sr)-[]->(yr:Year), (sr)-[]->(tr:Trim), (mmytr:MakeModelYearTrim)-[]->(mr), (mmytr)-[]->(yr), (mmytr)-[]->(tr), (mmytr)-[]->(mmytbr:MakeModelYearTrimBodyStyle), (mmytbr)-[]->(br:Bodystyle)
+WHERE c<>o and b=br
+return b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+MATCH 
+	(c:Consumer)<-[]-(s:Search), 
+	(s)-[]->(mk:Make), 
+	(s)-[]->(m:Model), 
+	(s)-[]->(y:Year), 
+	(s)-[]->(t:Trim), 
+	(mmyt:MakeModelYearTrim)-[]->(m), 
+	(mmyt)-[]->(y), 
+	(mmyt)-[]->(t), 
+	(mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle), 
+	(mmytb)-[]->(b:BodyStyle)
+WHERE 
+	c.consumerId=2201416 
+WITH 
+	mk, m, y, t, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 1
+MATCH 
+	(c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer), 
+	(o)<-[]-(sr:Search), 
+	(sr)-[]->(mkr:Make), 
+	(sr)-[]->(mr:Model), 
+	(sr)-[]->(yr:Year), 
+	(sr)-[]->(tr:Trim), 
+	(mmytr:MakeModelYearTrim)-[]->(mr), 
+	(mmytr)-[]->(yr), 
+	(mmytr)-[]->(tr), 
+	(mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle), 
+	(mmytbr)-[]->(br:BodyStyle) 
+WHERE 
+	c<>o and m<>mr and y=yr and b=br  
+RETURN 
+	b.name, ImpNum, mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+b.name	ImpNum	mkr.name	mr.name	yr.name	Sum(sr.impressionsCount)
+SUV	75	Jeep	Wrangler Unlimited	2017	522
+SUV	75	Ford	Explorer	2017	296
+SUV	75	Kia	Sorento	2017	276
+SUV	75	Jeep	Cherokee	2017	219
+SUV	75	Dodge	Journey	2017	204
+SUV	75	Jeep	Patriot	2017	197
+SUV	75	Nissan	Rogue	2017	192
+SUV	75	Subaru	Forester	2017	191
+SUV	75	Dodge	Durango	2017	176
+SUV	75	Hyundai	Tucson	2017	170
+SUV	75	Ford	Escape	2017	161
+SUV	75	GMC	Acadia	2017	154
+SUV	75	Acura	MDX	2017	132
+SUV	75	INFINITI	QX60	2017	130
+SUV	75	Porsche	Macan	2017	122
+SUV	75	GMC	Terrain	2017	120
+SUV	75	Jeep	Renegade	2017	113
+SUV	75	Chevrolet	Traverse	2017	111
+SUV	75	Mercedes-Benz	GLC 300	2017	105
+SUV	75	Toyota	Highlander	2017	82
+SUV	75	Ford	Edge	2017	81
+SUV	75	BMW	X5	2017	71
+SUV	75	Subaru	Outback	2017	66
+SUV	75	INFINITI	QX80	2017	66
+SUV	75	Lexus	GX 460	2017	64
+
+
+
+MATCH 
+	(mmyt)-[]->(mk:Make), 
+	(mmyt)-[]->(m:Model), 
+	(mmyt)-[]->(y:Year),
+	(mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+    (b:BodyStyle)<-[]-(mmytb),
+	(s)-[]->(mmyt:MakeModelYearTrim),   
+    (c:Consumer)<-[]-(s:Search) 
+WHERE
+	mk.name='BMW' and m.name='X5' and y.name=2016
+WITH 
+	mk, m, y, b, c
+MATCH 
+	(c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer), 
+	(o)<-[]-(sr:Search), 
+	(sr)-[]->(mmytr:MakeModelYearTrim), 
+	(mmytr)-[]->(mkr:Make), 
+	(mmytr)-[]->(mr:Model), 
+	(mmytr)-[]->(yr:Year),
+    (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+    (br:BodyStyle)<-[]-(mmytbr)
+WHERE 
+	m<>mr and y.name<=yr.name and b=br
+RETURN 
+	mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+
+MATCH 
+	(mmyt)-[]->(mk:Make), 
+	(mmyt)-[]->(m:Model), 
+	(mmyt)-[]->(y:Year),
+ 	(mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+    (b:BodyStyle)<-[]-(mmytb),
+ 	(s)-[]->(mmyt:MakeModelYearTrim),   
+    (c:Consumer)<-[]-(s:Search) 
+WHERE
+	mk.name='BMW' and m.name='X5' and y.name=2016
+WITH 
+	mk, m, y, b, c
+MATCH 
+	(c)<-[]-(sr:Search), 
+	(sr)-[]->(mmytr:MakeModelYearTrim), 
+	(mmytr)-[]->(mkr:Make), 
+	(mmytr)-[]->(mr:Model), 
+	(mmytr)-[]->(yr:Year),
+    (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+    (br:BodyStyle)<-[]-(mmytbr)
+WHERE 
+	m<>mr and y.name<=yr.name and yr.name=2017 and b=br
+RETURN 
+	mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+
+MATCH 
+	(mmyt)-[]->(mk:Make), 
+	(mmyt)-[]->(m:Model), 
+	(mmyt)-[]->(y:Year),
+	(mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+    (b:BodyStyle)<-[]-(mmytb),
+	(s)-[]->(mmyt:MakeModelYearTrim),   
+    (c:Consumer)<-[]-(s:Search) 
+WHERE
+	mk.name='BMW' and m.name='X5' and y.name=2016
+WITH 
+	mk, m, y, b, c
+MATCH 
+	(c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+    (c)-[]->(g:Gender)<-[]-(o:Consumer),
+	(o)<-[]-(sr:Search), 
+	(sr)-[]->(mmytr:MakeModelYearTrim), 
+	(mmytr)-[]->(mkr:Make), 
+	(mmytr)-[]->(mr:Model), 
+	(mmytr)-[]->(yr:Year),
+    (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+    (br:BodyStyle)<-[]-(mmytbr)
+WHERE 
+	m<>mr and y.name<=yr.name and b=br
+RETURN 
+	mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
+
+
+MATCH 
+	(mmyt)-[]->(mk:Make), 
+	(mmyt)-[]->(m:Model), 
+	(mmyt)-[]->(y:Year),
+	(mmyt)<-[]-(mmytb:MakeModelYearTrimBodyStyle),
+    (b:BodyStyle)<-[]-(mmytb),
+	(s)-[]->(mmyt:MakeModelYearTrim),   
+    (c:Consumer)<-[]-(s:Search) 
+WHERE
+	mk.name='BMW' and m.name='X5' and y.name=2016
+WITH 
+	mk, m, y, b, Sum(s.impressionsCount) As ImpNum, c ORDER BY ImpNum DESC LIMIT 10
+MATCH 
+	(c)-[]->(a:Age)-[]->(YearBuket)<-[]-(ao:Age)<-[]-(o:Consumer),
+    (c)-[]->(g:Gender)<-[]-(o:Consumer),
+	(o)<-[]-(sr:Search), 
+	(sr)-[]->(mmytr:MakeModelYearTrim), 
+	(mmytr)-[]->(mkr:Make), 
+	(mmytr)-[]->(mr:Model), 
+	(mmytr)-[]->(yr:Year),
+    (mmytr)<-[]-(mmytbr:MakeModelYearTrimBodyStyle),
+    (br:BodyStyle)<-[]-(mmytbr)
+WHERE 
+	m<>mr and y.name<=yr.name and b=br
+RETURN 
+	mkr.name, mr.name, yr.name, Sum(sr.impressionsCount)
+ORDER BY 
+	Sum(sr.impressionsCount) DESC
+LIMIT 25
